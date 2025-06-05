@@ -3,6 +3,7 @@ from discord.ext import commands
 import logging
 from dotenv import load_dotenv
 import os
+import webserver
 
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
@@ -33,5 +34,5 @@ async def hello(ctx):
 #@bot.event
 #async def on_member_join(member):
 #    await member.send(f'Welcome to the server {member.name}. Here are my socials!/n :underage: NFSW X (Twitter): https://x.com/Sylaellas /n :crown: Patreon: https://www.patreon.com/c/Sylaellas :crown:')
-
+webserver.keep_alive()
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
