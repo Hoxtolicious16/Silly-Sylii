@@ -3,7 +3,8 @@ from discord.ext import commands
 import logging
 from dotenv import load_dotenv
 import os
-import webserver
+import asyncio
+
 
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
@@ -18,21 +19,32 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
+    await bot.tree.sync(guild=discord.Object(id=1375249715662164050))
     print (f'We are ready to go in, {bot.user.name}')
 
+async def load():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            try:
+                await bot.load_extension(f'cogs.{filename[:-3]}')
+                print(f'Loaded extension: {filename[:-3]}')
+            except Exception as e:
+                print(f'Failed to load extension {filename[:-3]}: {e}')
 
-
-@bot.command()
-async def character(ctx):
-    await ctx.send(f"Heyo, {ctx.author.mention} As of now I've got: Illari, Pharah, Symmetra, Widowmaker, Mercy, Kiriko, Tracer, Sojourn, Ana. Alcina Dimitrescu, Claire Redfield, Mia Winters, Ashley Graham. Chun-Li, Juri Han, Cammy White. But work's never finished so master's got me workin'")
+async def main():
+    async with bot:
+        await load()
+        await bot.start(token)
 
 @bot.command()
 async def hello(ctx):
     await ctx.send(f"Hello {ctx.author.mention}!")
 
+@bot.command()
+async def bum(ctx):
+    await ctx.send(f"ong <@{1255499804838989946}> a bummy ahh fella. Tell em cuzzo {ctx.author.mention}!")
 
 #@bot.event
 #async def on_member_join(member):
 #    await member.send(f'Welcome to the server {member.name}. Here are my socials!/n :underage: NFSW X (Twitter): https://x.com/Sylaellas /n :crown: Patreon: https://www.patreon.com/c/Sylaellas :crown:')
-webserver.keep_alive()
-bot.run(token, log_handler=handler, log_level=logging.DEBUG)
+asyncio.run(main())
