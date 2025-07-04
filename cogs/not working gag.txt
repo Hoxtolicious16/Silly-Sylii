@@ -1,0 +1,58 @@
+import discord
+from discord.ext import commands, tasks
+import aiohttp
+from datetime import datetime, timezone, timedelta
+
+STOCK_API_URL = "https://api.joshlei.com/v2/growagarden/stock"
+CHANNEL_ID = 1380217539065282663
+active_events = {
+    "stock":         {},
+    "weather":       {},
+    "announcements": {}
+}
+class seedChecker(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.last_seed_time = 0
+        self.check_seeds.start()
+
+    def cog_unload(self):
+        self.check_seeds.cancel()
+
+        @tasks.loop(minutes=5)
+        async def stock(self, category_key: str, api_key: str, channel_id: int, title: str, interaction: discord.Interaction, button: discord.ui.Button, ctx: commands.Context):
+            print(f"Checking new stock for {category_key}")
+            async with aiohttp.ClientSession() as session:
+                async with session.get(STOCK_API_URL) as r:
+                    if r.status != 200:
+                        await interaction.response.send_message("Failed to fetch seeds", ephemeral=True)
+                        return
+                    raw_data = await r.json
+            stock = raw_data[0] if isinstance(raw_data,list) else raw_data
+            items = stock.get(api_key, [])
+            if not items:
+                return
+                
+            start_ts = max(i.get("start_date_unix", 0) for i in items)
+            if start_ts <= self.last_seed_time:
+                print("No new seeds")
+                return
+            end_ts   = max(i.get("end_date_unix", 0)   for i in items)
+            self.last_seed_time = start_ts
+
+            names = "\n".join(i.get("display_name", "Unknown") for i in items)
+            desc = f"**New Seed Stock!** 🌱\n\n{names}"
+            embed = discord.Embed(items,title, start_ts,end_ts)
+            embed.set_footer(text="Grow a Garden")
+
+
+            channel = self.bot.get_channel(CHANNEL_ID)
+            if channel:
+                await channel.send(embed=embed)
+                print("✅ Posted new seed stock.")
+                
+async def setup(bot):
+    await bot.add_cog(seedChecker(bot))
+            
+
+
