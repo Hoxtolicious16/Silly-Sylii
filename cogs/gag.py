@@ -39,7 +39,7 @@ class SeedChecker(commands.Cog):
             await ctx.send("🌱 No seed stock available right now.")
             return
 
-        names = "\n".join(f"{i.get(f"display_name","Unknown")} : {i.get("quantity", 0)}" for i in items)
+        names = "\n".join(f"{i.get(f'display_name','Unknown')} : {i.get('quantity', 0)}" for i in items)
         embed = discord.Embed(
             title="🌿 Current Seed Stock",
             description=names,
@@ -47,7 +47,6 @@ class SeedChecker(commands.Cog):
         )
         embed.set_footer(text="Grow a Garden")
         embed.timestamp = datetime.now(timezone.utc)
-
         await ctx.send(embed=embed)
 
 async def setup(bot):
