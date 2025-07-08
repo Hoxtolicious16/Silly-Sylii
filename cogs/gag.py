@@ -6,6 +6,11 @@ from datetime import datetime, timezone
 STOCK_API_URL = "https://api.joshlei.com/v2/growagarden/stock" #thanks joshlei for the public api :)
 CHANNEL_ID = 1380217539065282663 #hardcoded to my the current channel ID of the discord server, will be able to be changed later on. 
 
+def format_duration(sec: float) -> str:
+        m = int(sec // 60)
+        s = int(sec % 60)
+        return f"{m}m {s}s"
+
 class SeedChecker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -19,6 +24,8 @@ class SeedChecker(commands.Cog):
     async def check_seeds(self):
         pass
 
+
+    
     @commands.command(name="seeds")
     async def seeds_command(self, ctx):
         async with aiohttp.ClientSession() as session:
@@ -40,6 +47,8 @@ class SeedChecker(commands.Cog):
             return
 
         names = "\n".join(f"{i.get(f'display_name','Unknown')} : {i.get('quantity', 0)}" for i in items)
+        end_ts = max(i.get("end_date_unix",   0) for i in items)
+        
         embed = discord.Embed(
             title="🌿 Current Seed Stock",
             description=names,
@@ -47,7 +56,10 @@ class SeedChecker(commands.Cog):
         )
         embed.set_footer(text="Grow a Garden")
         embed.timestamp = datetime.now(timezone.utc)
-        await ctx.send(embed=embed)
+        remaining = max(0, end_ts - datetime.now(timezone.utc).timestamp()) # calculates the Time remaining until the seed stock expires from the API 
+        embed.add_field(name='Ends in:', value =f"<t:{end_ts}:R>", inline=True) # unix timestamp at the bottom of the embed file
+        await ctx.send(embed=embed, delete_after = remaining) # deletes the message after remaining time has been reached.
+        await ctx.message.delete()
 
 async def setup(bot):
     await bot.add_cog(SeedChecker(bot))
