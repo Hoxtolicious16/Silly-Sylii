@@ -15,6 +15,10 @@ class SeedChecker(commands.Cog):
     def cog_unload(self):
         self.check_seeds.cancel()
 
+    @tasks.loop(minutes=5)
+    async def check_seeds(self):
+        pass
+
     @commands.command(name="seeds")
     async def seeds_command(self, ctx):
         async with aiohttp.ClientSession() as session:
@@ -35,7 +39,7 @@ class SeedChecker(commands.Cog):
             await ctx.send("🌱 No seed stock available right now.")
             return
 
-        names = "\n".join(i.get(f"display_name","quantity") for i in items)
+        names = "\n".join(f"{i.get(f"display_name","Unknown")} : {i.get("quantity", 0)}" for i in items)
         embed = discord.Embed(
             title="🌿 Current Seed Stock",
             description=names,
