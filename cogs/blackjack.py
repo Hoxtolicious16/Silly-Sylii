@@ -75,9 +75,9 @@ class BlackJackView(discord.ui.View):
             )
             self.disable_all_items()
             try:
-                await interaction.response.edit_message(content=desc, view=self)
+                await interaction.response.edit_message(content=desc, view=self, delete_after=10)
             except discord.InteractionResponded:
-                await interaction.edit_original_response(content=desc, view=self)
+                await interaction.edit_original_response(content=desc, view=self, delete_after=10)
         else:
             await self.update_message(interaction)
 

@@ -1,10 +1,12 @@
 import discord
 from discord.ext import commands, tasks
 import aiohttp
+import os
 from datetime import datetime, timezone
 
 STOCK_API_URL = "https://api.joshlei.com/v2/growagarden/stock" #thanks joshlei for the public api :)
 CHANNEL_ID = 1380217539065282663 #hardcoded to my the current channel ID of the discord server, will be able to be changed later on. 
+JSTUDIO_KEY = os.getenv('JSTUDIO_KEY')
 
 def format_duration(sec: float) -> str:
         m = int(sec // 60)
@@ -28,7 +30,11 @@ class SeedChecker(commands.Cog):
     
     @commands.command(name="seeds")
     async def seeds_command(self, ctx):
-        async with aiohttp.ClientSession() as session:
+        headers = {
+            'jstudio-key': JSTUDIO_KEY
+        }
+
+        async with aiohttp.ClientSession(headers=headers) as session:
             try:
                 async with session.get(STOCK_API_URL) as r:
                     if r.status != 200:

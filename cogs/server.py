@@ -6,7 +6,6 @@ import traceback
 
 icon_url = f"https://api.mcsrvstat.us/icon/play.spectralsportsnetwork.com"
 MINECRAFT_STATUS_API = 'https://api.mcsrvstat.us/3/play.spectralsportsnetwork.com'
-GUILD_ID = 1375249715662164050
 
 class serverInfo(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -51,7 +50,7 @@ class serverInfo(commands.Cog):
             name="server",
             description="Get Minecraft server info",
             callback=self.server_information)
-        self.bot.tree.add_command(command, guild=discord.Object(id=GUILD_ID))               #honestly i had no idea how to sync up /commands on discord, i had to rely on google for this one
+        self.bot.tree.add_command(command)               #honestly i had no idea how to sync up /commands on discord, i had to rely on google for this one
 
 async def setup(bot):
     await bot.add_cog(serverInfo(bot))
