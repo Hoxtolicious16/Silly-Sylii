@@ -17,7 +17,8 @@ class Help(commands.Cog):
         embed.add_field(name=f"```!character``` 📝", value="Makes the bot tell you about my Patreon work!", inline=False)
         embed.add_field(name=f"```!seeds``` 🌱", value="Get a list of all available seeds in stock for the Roblox game 'Grow a Garden'.", inline=False)
         embed.set_footer(text="❖ ——————— ❖ ——————— ❖ ——————— ❖ ——————— ❖ ——————— ❖")
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, delete_after=60)
+        await ctx.message.delete()
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Help(bot))
