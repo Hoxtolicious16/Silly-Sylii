@@ -15,6 +15,7 @@ intents.message_content = True
 intents.members = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
+bot.remove_command('help')  # Remove the default help command to use our custom one.
 
 @bot.event
 async def on_ready():
