@@ -34,6 +34,7 @@ class CommissionCog(commands.Cog):
         self.bot = bot
 
     @commands.command(name="commission")
+    @commands.has_permissions(administrator=True)
     async def commission_command(self, ctx: commands.Context):
         """Launches a commission via button."""
         embed = discord.Embed(

@@ -75,9 +75,9 @@ class BlackJackView(discord.ui.View):
             )
             self.disable_all_items()
             try:
-                await interaction.response.edit_message(content=desc, view=self, delete_after=10)
+                await interaction.response.edit_message(content=desc, view=self)
             except discord.InteractionResponded:
-                await interaction.edit_original_response(content=desc, view=self, delete_after=10)
+                await interaction.edit_original_response(content=desc, view=self)
         else:
             await self.update_message(interaction)
 
@@ -148,7 +148,8 @@ class blackjack(commands.Cog):
             f"🤖 Dealer's hand: {dealer_hand[0][0]}{dealer_hand[0][1]} ❓"
         )
 
-        message = await ctx.send(content=content, view=view)
+        message = await ctx.send(content=content, view=view, delete_after=70)
+        await ctx.message.delete()
         view.message_id = message.id  # for timeout editing if needed
 
 async def setup(bot):

@@ -13,7 +13,7 @@ class moderation(commands.Cog):
             await ctx.channel.send("You cannot ban nobody/yourself")
             return
         else:
-            await ctx.channel.send("No perms")
+            await ctx.channel.send("No perms", ephemeral=True)
         await ctx.channel.send(f"{member} is banned!")
         await ctx.guild.ban(member)
 

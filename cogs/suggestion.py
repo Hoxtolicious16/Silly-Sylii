@@ -34,6 +34,7 @@ class SuggestionCog(commands.Cog):
         self.bot = bot
 
     @commands.command(name="suggestion")
+    @commands.has_permissions(administrator=True)
     async def commission_command(self, ctx: commands.Context):
         """Launches a suggestion via button."""
         embed = discord.Embed(

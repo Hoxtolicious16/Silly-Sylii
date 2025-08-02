@@ -81,13 +81,13 @@ class twitter_scraper(commands.Cog):
                         print("Error editing channel name:", e)
 
     @commands.command(name='update') # force update command
-    @commands.has_role('The Snost & Lost') # will be changed to has permissions to make it more customizeable later
+    @commands.has_role(1375849523015979099) # will be changed to has permissions to make it more customizeable later
     async def update(self,ctx):
         guild = ctx.guild
         await self.update_channel_now(guild)
 
     @commands.command(name='setup') # used to create the channel and in the future to set up important variables such as twitter @ and moderation channel.
-    @commands.has_role('The Snost & Lost')
+    @commands.has_role(1375849523015979099)
     async def setup(self, ctx):
         guild = ctx.guild
         existing_channel = get(guild.voice_channels, name=Start_name)
